@@ -5,11 +5,9 @@ import 'package:tmdb_viewer/models/movie.dart';
 import 'package:tmdb_viewer/models/movie_details.dart';
 import 'package:tmdb_viewer/models/movie_search_suggestion.dart';
 
-const String apiKey = 'ffea4ca1099c6f945cfe912e08056be2';
-
-const String apiImageUrlPrefix = 'https://image.tmdb.org/t/p/w500';
-
-const String youtubeVideoUrlPrefix = 'https://www.youtube.com/watch?v=';
+const apiKey = 'ffea4ca1099c6f945cfe912e08056be2';
+const apiImageUrlPrefix = 'https://image.tmdb.org/t/p/w500';
+const youtubeVideoUrlPrefix = 'https://www.youtube.com/watch?v=';
 
 class Api {
   static const bool _include_adult = true;
@@ -20,6 +18,7 @@ class Api {
 
   bool get hasNextPage => _totalPages != null ? _totalPages > (_nextPage - 1) : false;
 
+  ///
   Future<List<Movie>> search(String search) async {
     _search = search;
     _nextPage = 1;

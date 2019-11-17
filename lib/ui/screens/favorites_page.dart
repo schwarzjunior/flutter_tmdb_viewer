@@ -10,11 +10,9 @@ class FavoritesPage extends StatelessWidget {
     final favBloc = BlocProvider.getBloc<FavoritesBloc>();
 
     return Scaffold(
-      backgroundColor: Colors.black87,
       appBar: AppBar(
         title: const Text('Favoritos'),
         centerTitle: true,
-        backgroundColor: Colors.black87,
       ),
       body: StreamBuilder<Map<String, Movie>>(
         stream: favBloc.outFav,
@@ -26,7 +24,6 @@ class FavoritesPage extends StatelessWidget {
           return ListView.separated(
             itemCount: snapshot.data.length,
             separatorBuilder: (context, index) => Divider(
-              color: Colors.white70,
               thickness: 0.3,
             ),
             itemBuilder: (context, index) {
@@ -96,7 +93,9 @@ class FavoritesPage extends StatelessWidget {
               fit: BoxFit.scaleDown,
               loadingBuilder: (context, child, chunkEvent) => Center(child: child),
             )
-          : const Icon(Icons.local_movies, size: 40, color: Colors.white38),
+          // TODO: Icon color (remover)
+          : const Icon(Icons.movie_filter, size: 40, color: Colors.white38),
+//          : const Icon(Icons.local_movies, size: 40, color: Colors.white38),
     );
   }
 
@@ -111,7 +110,8 @@ class FavoritesPage extends StatelessWidget {
           Text(
             'Nenhum favorito encontrado',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline.copyWith(color: Colors.grey[400]),
+            style: Theme.of(context).textTheme.headline,
+//            style: Theme.of(context).textTheme.headline.copyWith(color: Colors.grey[400]),
           ),
           const SizedBox(height: 80),
         ],

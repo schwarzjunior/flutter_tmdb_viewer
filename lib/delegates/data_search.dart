@@ -51,7 +51,7 @@ class DataSearch extends SearchDelegate<String> {
             if (snapshot.data[index].mediaType == 'movie')
               icon = Icons.local_movies;
             else if (snapshot.data[index].mediaType == 'tv')
-              icon = Icons.tv;
+              icon = Icons.live_tv;
             else
               icon = Icons.play_arrow;
             return ListTile(

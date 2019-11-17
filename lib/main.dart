@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         title: 'tmdb_viewer',
         theme: myTheme,
         /*theme: ThemeData(
-//        brightness: Brightness.dark,
+          //brightness: Brightness.dark,
           primarySwatch: Colors.green,
         ),*/
 

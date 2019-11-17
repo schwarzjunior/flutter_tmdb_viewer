@@ -34,20 +34,15 @@ class MovieTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                          child: Text(movie.title,
-                              maxLines: 2,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .title
-                                  .copyWith(color: Colors.white))),
+                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                        child: Text(movie.title,
+                            maxLines: 2, style: Theme.of(context).textTheme.title),
+                      ),
                       Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Text('Year: ${movie.releaseDateYear}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle
-                                  .copyWith(color: Colors.white))),
+                        padding: const EdgeInsets.all(8),
+                        child: Text('Year: ${movie.releaseDateYear}',
+                            style: Theme.of(context).textTheme.subtitle),
+                      ),
                     ],
                   ),
                 ),
