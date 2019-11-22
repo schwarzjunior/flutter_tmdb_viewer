@@ -18,6 +18,12 @@ dependencies:
   url_launcher: ^5.2.5
   flutter_money_formatter: ^0.8.3
 
+#  woods_theme_changer:
+#    path: ../_packages_/woods_theme_changer
+
+  flutter_dynamic_theme_mode:
+    path: ../_packages_/flutter_dynamic_theme_mode
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

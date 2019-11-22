@@ -1,4 +1,4 @@
-import 'package:tmdb_viewer/api.dart';
+import 'package:tmdb_viewer/api/tmdb_api.dart';
 
 class Movie extends MovieBase {
   Movie({
@@ -12,8 +12,7 @@ class Movie extends MovieBase {
     num popularity,
     String posterPath,
     String backdropPath,
-  }) : super(id, title, overview, releaseDate, adult, voteCount, voteAverage, popularity,
-            posterPath, backdropPath);
+  }) : super(id, title, overview, releaseDate, adult, voteCount, voteAverage, popularity, posterPath, backdropPath);
 
   factory Movie.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('id')) {
@@ -27,8 +26,8 @@ class Movie extends MovieBase {
           voteCount: json['vote_count'],
           voteAverage: json['vote_average'],
           popularity: json['popularity'],
-          posterPath: Api.buildImageUrl(json['poster_path']),
-          backdropPath: Api.buildImageUrl(json['backdrop_path']));
+          posterPath: ApiFunctions.buildImageUrl(json['poster_path']),
+          backdropPath: ApiFunctions.buildImageUrl(json['backdrop_path']));
     } else {
       return Movie(
           id: json['movie_id'],
@@ -88,7 +87,7 @@ class MovieBase {
   String get idString => id.toString();
 
   String get releaseDateYear {
-    final DateTime dt = DateTime.tryParse(releaseDate);
+    final DateTime dt = DateTime.tryParse(releaseDate ?? '');
     return dt != null ? dt.year.toString().padLeft(2, '0') : null;
   }
 

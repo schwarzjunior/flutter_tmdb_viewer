@@ -48,6 +48,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_dynamic_theme_mode:
+    dependency: "direct main"
+    description:
+      path: "..\\_packages_\\flutter_dynamic_theme_mode"
+      relative: true
+    source: path
+    version: "0.0.1"
   flutter_money_formatter:
     dependency: "direct main"
     description:

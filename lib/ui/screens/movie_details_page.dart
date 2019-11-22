@@ -1,5 +1,8 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:tmdb_viewer/api.dart';
+
+import 'package:tmdb_viewer/api/tmdb_api.dart';
+import 'package:tmdb_viewer/blocs/favorites_bloc.dart';
 import 'package:tmdb_viewer/models/movie.dart';
 import 'package:tmdb_viewer/models/movie_details.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
@@ -7,11 +10,12 @@ import 'package:tmdb_viewer/utils/formatters.dart' as fmt;
 
 class MovieDetailsPage extends StatelessWidget {
   final Movie movie;
-  final Api _api;
+
+  final ApiMovies _apiMovies;
   static TextTheme _textTheme;
 
   MovieDetailsPage(this.movie, {Key key})
-      : _api = Api(),
+      : _apiMovies = ApiMovies(),
         super(key: key);
 
   @override
@@ -46,11 +50,11 @@ class MovieDetailsPage extends StatelessWidget {
                       // Overview do filme.
                       _buildOverview(movieDetails),
                       _divider,
-                      // Budget.
-                      _buildBudget(movieDetails),
-//                      _divider,
+                      _buildInfoLine('Status:', movieDetails.status),
                       const SizedBox(height: 8),
-                      _buildRevenue(movieDetails),
+                      _buildInfoLine('Budget:', fmt.formatCurrency(movieDetails.budget)),
+                      const SizedBox(height: 8),
+                      _buildInfoLine('Revenue:', fmt.formatCurrency(movieDetails.revenue)),
                       _divider,
                       // Lista de videos.
                       _buildVideosList(movieDetails),
@@ -76,41 +80,15 @@ class MovieDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRevenue(MovieDetails movieDetails) {
+  Widget _buildInfoLine(String label, String value) {
     return Row(
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(right: 8),
-          child: Text(
-            'Revenue:',
-            style: _textTheme.subhead,
-          ),
+          child: Text(label, style: _textTheme.subhead),
         ),
         Expanded(
-          child: Text(
-            fmt.formatCurrency(movieDetails.revenue),
-            style: _textTheme.subhead.copyWith(color: Colors.white60),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBudget(MovieDetails movieDetails) {
-    return Row(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Text(
-            'Budget:',
-            style: _textTheme.subhead,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            fmt.formatCurrency(movieDetails.budget),
-            style: _textTheme.subhead.copyWith(color: Colors.white60),
-          ),
+          child: Text(value, style: _textTheme.subhead.copyWith(color: Colors.white60)),
         ),
       ],
     );
@@ -118,12 +96,9 @@ class MovieDetailsPage extends StatelessWidget {
 
   Widget _buildTaglineVoteAverage(MovieDetails movieDetails) {
     final voteAverage = (movieDetails.movie.voteAverage * 10).toInt();
-    final voteAverageText = voteAverage == 0
-        ? 'ND'
-        : voteAverage.toString().padLeft(voteAverage < 10 ? 2 : 3, ' ');
-    final voteAverageColor = voteAverage == 0
-        ? Colors.grey
-        : (voteAverage >= 70 ? Colors.lightGreenAccent[700] : Colors.yellowAccent[400]);
+    final voteAverageText = voteAverage == 0 ? 'ND' : voteAverage.toString().padLeft(voteAverage < 10 ? 2 : 3, ' ');
+    final voteAverageColor =
+        voteAverage == 0 ? Colors.grey : (voteAverage >= 70 ? Colors.lightGreenAccent[700] : Colors.yellowAccent[400]);
 
     return Row(
       children: <Widget>[
@@ -209,13 +184,13 @@ class MovieDetailsPage extends StatelessWidget {
   }
 
   _openYoutubeVideo(String key) async {
-    final url = '$youtubeVideoUrlPrefix$key';
+    final url = ApiFunctions.buildVideoUrl(key);
     if (await url_launcher.canLaunch(url)) {
       await url_launcher.launch(url);
     }
   }
 
-  Future<MovieDetails> getDetails() async => await _api.getDetails(movie);
+  Future<MovieDetails> getDetails() async => await _apiMovies.details(movie);
 }
 
 /// Widget com a imagem do poster e o titulo do filme
@@ -226,6 +201,8 @@ class MoviePosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final favBloc = BlocProvider.getBloc<FavoritesBloc>();
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
@@ -267,6 +244,39 @@ class MoviePosterWidget extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: StreamBuilder<Map<String, Movie>>(
+            stream: favBloc.outFav,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return CircularProgressIndicator();
+
+              final isFavorite = snapshot.data.containsKey(movieDetails.movie.idString);
+              return IconButton(
+                icon: Icon(isFavorite ? Icons.star : Icons.star_border),
+                color: isFavorite ? Colors.yellowAccent : Colors.white,
+                iconSize: 30,
+                onPressed: () {
+                  favBloc.toggleFavorite(movieDetails.movie);
+                },
+              );
+            },
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          child: IconButton(
+            icon: Icon(Icons.open_in_new),
+            color: Colors.white.withAlpha(200),
+            iconSize: 30,
+            tooltip: 'Go to homepage',
+            onPressed: () {
+              // TODO: Open movie homepage.
+            },
           ),
         ),
       ],

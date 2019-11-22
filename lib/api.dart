@@ -64,9 +64,8 @@ class Api {
   List<MovieSearchSuggestion> decodeSuggestion(http.Response response) {
     if (response.statusCode == 200) {
       var decoded = json.decode(response.body);
-      List<MovieSearchSuggestion> searchSuggestions = decoded['results']
-          .where((ms) => ms['media_type'] == 'movie').toList()
-          .map<MovieSearchSuggestion>((ms) {
+      List<MovieSearchSuggestion> searchSuggestions =
+          decoded['results'].where((ms) => ms['media_type'] == 'movie').toList().map<MovieSearchSuggestion>((ms) {
         return MovieSearchSuggestion.fromJson(ms);
       }).toList();
       /*List<MovieSearchSuggestion> searchSuggestions =
